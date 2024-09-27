@@ -7,4 +7,6 @@ Basic console app that will do very little
 ## User secrets commands
 
 ### List
-'''dotnet user-secrets list'''
+```console
+dotnet user-secrets list
+```
