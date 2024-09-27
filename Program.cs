@@ -18,7 +18,5 @@ class Program()
         IConfiguration configuration = builder.Build();
 
         _MetOfficeApiKey = configuration["MetOfficeApiKey"]??"";
-
-        Console.WriteLine($"Met Office Api Key: {_MetOfficeApiKey}");
     }
 }
