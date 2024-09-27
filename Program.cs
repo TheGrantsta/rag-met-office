@@ -141,34 +141,3 @@ class Program()
         return embeddingsList;
     }
 }
-
-public class FeatureCollection
-{
-    [JsonProperty("features")]
-    public List<Feature> Features { get; set; } = new List<Feature>();
-}
-
-public class Feature
-{
-    [JsonProperty("properties")]
-    public Properties? Properties {get; set;}
-}
-
-public class Properties
-{
-    [JsonProperty("timeSeries")]
-    public List<TimeSeries> TimeSeries { get; set; } = new List<TimeSeries>();
-}
-
-public class TimeSeries
-{
-    [JsonProperty("time")]
-    public string? Time { get; set; }
-
-    [JsonProperty("maxScreenAirTemp")]
-    public double MaxScreenAirTemp { get; set; }
-
-    [JsonProperty("minScreenAirTemp")]
-    public double MinScreenAirTemp { get; set; }
-
-}
