@@ -1,8 +1,24 @@
-﻿class Program
+﻿using System;
+using Microsoft.Extensions.Configuration;
+
+class Program()
 {
-    // Main function
+    private static string _MetOfficeApiKey = String.Empty;
     static async Task Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        GetConfigurationValues();
+
+        Console.WriteLine("Finished!");
+    }
+
+    private static void GetConfigurationValues()
+    {
+        var builder = new ConfigurationBuilder().AddUserSecrets<Program>();
+
+        IConfiguration configuration = builder.Build();
+
+        _MetOfficeApiKey = configuration["MetOfficeApiKey"]??"";
+
+        Console.WriteLine($"Met Office Api Key: {_MetOfficeApiKey}");
     }
 }
