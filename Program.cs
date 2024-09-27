@@ -9,7 +9,7 @@ class Program()
 {
     static async Task Main(string[] args)
     {
-        var retrievedData = await FetchDataFromApi("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly");
+        var hourlySpotData = await FetchDataFromApi("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly");
 
         Console.WriteLine("Finished!");
     }
