@@ -19,10 +19,12 @@ class Program()
 
         var hourlySpotDataAsText = ExtractTextFromJson(hourlySpotData);
 
+        var embeddings = await GenerateEmbeddings(hourlySpotDataAsText);
+
         //Debugging purposes only!
-        // foreach(var text in hourlySpotDataAsText)
+        // foreach(var embed in embeddings)
         // {
-        //     Console.WriteLine($"Text: {text}");
+        //     Console.WriteLine($"Embed: {embed}");
         // }
 
         Console.WriteLine("Finished!");
@@ -86,6 +88,57 @@ class Program()
         }            
         
         return extractedTexts;
+    }
+
+    static async Task<List<float[]>> GenerateEmbeddings(List<string> texts)
+    {
+        var apiKey = GetConfigurationValues("OpenAiApiKey");
+        var organisationId = GetConfigurationValues("OpenAiOrganisationId");
+        var projectId = GetConfigurationValues("OpenAiProjectId");
+
+        var embeddingsList = new List<float[]>();
+
+        foreach (var text in texts)
+        {
+            var requestBody = new
+            {
+                input = text,
+                model = "text-embedding-ada-002" // The OpenAI embeddings model
+            };
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                    client.DefaultRequestHeaders.Add("OpenAI-Organization", organisationId);
+                    client.DefaultRequestHeaders.Add("OpenAI-Project", projectId);
+
+                    var response = await client.PostAsync("https://api.openai.com/v1/embeddings", 
+                        new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
+                    
+                    response.EnsureSuccessStatusCode();
+
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var parsedResponse = JsonDocument.Parse(jsonResponse);
+
+                    var embeddingData = parsedResponse.RootElement
+                        .GetProperty("data")[0]
+                        .GetProperty("embedding")
+                        .EnumerateArray()
+                        .Select(x => x.GetSingle())
+                        .ToArray();
+
+                    embeddingsList.Add(embeddingData);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating embedding: {ex.Message}");
+            }
+        }
+
+        return embeddingsList;
     }
 }
 
