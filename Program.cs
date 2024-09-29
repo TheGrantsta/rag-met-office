@@ -19,13 +19,17 @@ class Program()
 
         var hourlySpotDataAsText = ExtractTextFromJson(hourlySpotData);
 
-        var embeddings = await GenerateEmbeddings(hourlySpotDataAsText);
+        if (hourlySpotDataAsText.Any())
+        {
+            var embeddings = await GenerateEmbeddings(hourlySpotDataAsText);
 
-        //Debugging purposes only!
-        // foreach(var embed in embeddings)
-        // {
-        //     Console.WriteLine($"Embed: {embed}");
-        // }
+            if (embeddings.Any())
+            {
+                var generatedResponse = await GenerateResponseBasedOnContext(embeddings);
+
+                Console.WriteLine($"Generated Response: {generatedResponse}");
+            }
+        }
 
         Console.WriteLine("Finished!");
     }
@@ -139,5 +143,55 @@ class Program()
         }
 
         return embeddingsList;
+    }
+
+    static async Task<string> GenerateResponseBasedOnContext(List<float[]> embeddings)
+    {
+        var generatedText = String.Empty;
+
+        // For simplicity, we are just going to concatenate the embeddings into a simple context for now.
+        // In a real system, you would perform a similarity search to find the most relevant embeddings.
+        var context = string.Join("\n", embeddings.Select(e => string.Join(", ", e)));
+
+        var apiKey = GetConfigurationValues("OpenAiApiKey");
+        var organisationId = GetConfigurationValues("OpenAiOrganisationId");
+        var projectId = GetConfigurationValues("OpenAiProjectId");
+
+        var requestBody = new
+        {
+            model = "gpt-4", // Use the GPT model
+            prompt = $"Using the following embeddings as context:\n{context}\nGenerate a relevant response:",
+            max_tokens = 150,
+            temperature = 0.7
+        };
+
+        try
+        {
+             using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                client.DefaultRequestHeaders.Add("OpenAI-Organization", organisationId);
+                client.DefaultRequestHeaders.Add("OpenAI-Project", projectId);
+
+                // Send the POST request to OpenAI's API
+                var response = await client.PostAsync("https://api.openai.com/v1/completions",
+                    new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
+
+                response.EnsureSuccessStatusCode();
+
+                // Read and process the response
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var parsedResponse = JsonDocument.Parse(jsonResponse);
+
+                // Extract the generated text from the response
+                generatedText = parsedResponse.RootElement.GetProperty("choices")[0].GetProperty("text").ToString().Trim();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error generating response: {ex.Message}");
+        }
+
+        return generatedText;
     }
 }
