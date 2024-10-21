@@ -15,10 +15,8 @@ class Program()
         {
             var generatedResponse = await GenerateResponseBasedOnContext(hourlySpotDataAsText);
 
-            Console.WriteLine($"Generated Response: {generatedResponse}");
+            Console.WriteLine($"\n{generatedResponse}\n");
         }
-
-        Console.WriteLine("Finished!");
     }
 
      static async Task<string> FetchDataFromApi(string apiUrl)
@@ -59,7 +57,9 @@ class Program()
             foreach (var timeSeries in properties.TimeSeries)
             {
                 var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
-                extractedTexts.Add($"Maximum temperature {timeSeries.MaxScreenAirTemp} and minimum temperature {timeSeries.MinScreenAirTemp} at {localDateTime.ToLocalTime()}" );
+                //extractedTexts.Add($"Maximum temperature {timeSeries.MaxScreenAirTemp} and minimum temperature {timeSeries.MinScreenAirTemp} at {localDateTime.ToLocalTime()}" );
+
+                extractedTexts.Add($"At {localDateTime.ToLocalTime()}, it will be cloudy with max temperature of ${timeSeries.MaxScreenAirTemp} and a min of ${timeSeries.MinScreenAirTemp}");
             }
         }
         catch (Exception ex)
@@ -91,7 +91,7 @@ class Program()
                 messages = new[]
                 {
                     new { role = "system", content = contextInfo },
-                    new { role = "user", content = "What will the weather be like in Barnet for the next 4 hours?" }
+                    new { role = "user", content = "What will the weather be like in Barnet for the next 4 hours? Summarise the response to two lines and round temperatures to zero decimal places" }
                 },
                 max_tokens = 100,
                 temperature = 0.7
