@@ -5,8 +5,14 @@ using Newtonsoft.Json;
 
 class Program()
 {
-    private static readonly string _latitude = "51.652931";
-    private static readonly string _longitude = "-0.199610";
+    public struct Coordinates(string latitude, string longitude)
+    {
+        public string Latitude { get; set; } = latitude;
+        public string Longitude { get; set; } = longitude;
+    }
+
+    private static Coordinates _coordinates = new("51.652931", "-0.199610");
+
     static async Task Main(string[] args)
     {
         var hourlySpotData = await FetchDataFromApi("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly");
@@ -27,7 +33,7 @@ class Program()
 
         try
         {
-            var requestUrl = $"{apiUrl}?latitude={_latitude}&longitude={_longitude}";
+            var requestUrl = $"{apiUrl}?latitude={_coordinates.Latitude}&longitude={_coordinates.Longitude}";
 
             using (var client = new HttpClient()) {
                 client.DefaultRequestHeaders.Add("ApiKey", Utils.GetConfigurationValues("MetOfficeApiKey"));
@@ -72,8 +78,7 @@ class Program()
 
        static async Task<string> GenerateResponseBasedOnContext(List<string> strings)
     {
-        // For simplicity, we are just going to concatenate the embeddings into a simple context for now.
-        // In a real system, you would perform a similarity search to find the most relevant embeddings.
+        // For simplicity, we are just going to concatenate the weather statements into a simple context for now.
         var context = string.Join("\n", strings.Select(e => string.Join(". ", e)));
 
         return await GenerateResponseBasedOnContext(context);
@@ -83,7 +88,7 @@ class Program()
     {
         var generatedText = string.Empty;
 
-        string contextInfo = $"Here is the weather data for this location (latitude {_latitude} and longitude {_longitude}) for the next 24 hours: {context}.";
+        string contextInfo = $"Here is the weather data for this location (latitude {_coordinates.Latitude} and longitude {_coordinates.Longitude}) for the next 24 hours: {context}.";
 
         var requestBody = new
             {
