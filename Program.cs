@@ -6,10 +6,18 @@
         public string Longitude { get; set; } = longitude;
     }
 
-    private static Coordinates _coordinates = new("51.652931", "-0.199610");
+    private static Coordinates _coordinates;
 
-    static async Task Main()
+    static async Task Main(string[] args)
     {
+        Console.WriteLine("Enter latitude: (hint 51.652931)");
+        var latitude = Console.ReadLine();
+
+        Console.WriteLine("Enter longitude: (hint -0.199610)");
+        var longitude = Console.ReadLine();
+
+        _coordinates = new Coordinates(latitude, longitude);
+
         var hourlySpotData = await WeatherApi.FetchDataFromApi("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", _coordinates.Latitude, _coordinates.Longitude);
 
         var hourlySpotDataAsText = Utils.ExtractTextFromJson(hourlySpotData);
