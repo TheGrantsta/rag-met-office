@@ -89,7 +89,7 @@ class Program()
                 messages = new[]
                 {
                     new { role = "system", content = contextInfo },
-                    new { role = "user", content = "What will the weather be like in Barnet for the next 4 hours? Summarise the response to two lines and round temperatures to zero decimal places" }
+                    new { role = "user", content = "What will the weather be like in Barnet for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places" }
                 },
                 max_tokens = 100,
                 temperature = 0.7
