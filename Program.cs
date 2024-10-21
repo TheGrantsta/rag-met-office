@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 
 class Program()
 {
+    private static readonly string _latitude = "51.652931";
+    private static readonly string _longitude = "-0.199610";
     static async Task Main(string[] args)
     {
         var hourlySpotData = await FetchDataFromApi("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly");
@@ -25,7 +27,7 @@ class Program()
 
         try
         {
-            var requestUrl = $"{apiUrl}?latitude=51.652931&longitude=-0.199610";
+            var requestUrl = $"{apiUrl}?latitude={_latitude}&longitude={_longitude}";
 
             using (var client = new HttpClient()) {
                 client.DefaultRequestHeaders.Add("ApiKey", Utils.GetConfigurationValues("MetOfficeApiKey"));
@@ -81,7 +83,7 @@ class Program()
     {
         var generatedText = string.Empty;
 
-        string contextInfo = $"Here is the weather data for Barnet for the next 24 hours: {context}";
+        string contextInfo = $"Here is the weather data for this location (latitude {_latitude} and longitude {_longitude}) for the next 24 hours: {context}.";
 
         var requestBody = new
             {
@@ -89,7 +91,7 @@ class Program()
                 messages = new[]
                 {
                     new { role = "system", content = contextInfo },
-                    new { role = "user", content = "What will the weather be like in Barnet for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places" }
+                    new { role = "user", content = $"What will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places." }
                 },
                 max_tokens = 100,
                 temperature = 0.7
