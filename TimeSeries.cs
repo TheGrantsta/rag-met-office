@@ -14,4 +14,6 @@ public class TimeSeries
     [JsonProperty("feelsLikeTemperature")]
     public double FeelsLikeTemperature { get; set; }
 
+    [JsonProperty("significantWeatherCode")]
+    public int WeatherCode { get; set; }
 }

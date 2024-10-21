@@ -57,7 +57,7 @@ class Program()
             foreach (var timeSeries in properties.TimeSeries)
             {
                 var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
-                extractedTexts.Add($"At {localDateTime.ToLocalTime()}, it will be cloudy with max temperature of ${timeSeries.MaxScreenAirTemp}, a min of ${timeSeries.MinScreenAirTemp} and will feel like ${timeSeries.FeelsLikeTemperature}");
+                extractedTexts.Add($"At {localDateTime.ToLocalTime()}, it will be ${Utils.Boo(timeSeries.WeatherCode)} with max temperature of ${timeSeries.MaxScreenAirTemp}, a min of ${timeSeries.MinScreenAirTemp} and will feel like ${timeSeries.FeelsLikeTemperature}");
             }
         }
         catch (Exception ex)
@@ -72,7 +72,7 @@ class Program()
     {
         // For simplicity, we are just going to concatenate the embeddings into a simple context for now.
         // In a real system, you would perform a similarity search to find the most relevant embeddings.
-        var context = string.Join("\n", strings.Select(e => string.Join(", ", e)));
+        var context = string.Join("\n", strings.Select(e => string.Join(". ", e)));
 
         return await GenerateResponseBasedOnContext(context);
     }
@@ -85,7 +85,7 @@ class Program()
 
         var requestBody = new
             {
-                model = "gpt-3.5-turbo", // Or another model like "gpt-3.5-turbo"
+                model = "gpt-3.5-turbo",
                 messages = new[]
                 {
                     new { role = "system", content = contextInfo },
@@ -105,16 +105,12 @@ class Program()
 
                 var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
 
-                // Send the POST request to OpenAI's API
                 var response = await client.PostAsync("https://api.openai.com/v1/chat/completions", content);
-
                 response.EnsureSuccessStatusCode();
 
-                // Read and process the response
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var parsedResponse = JsonDocument.Parse(jsonResponse);
 
-                // Extract the generated text from the response
                 generatedText = parsedResponse.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").ToString().Trim();
             }
         }
