@@ -11,4 +11,7 @@ public class TimeSeries
     [JsonProperty("minScreenAirTemp")]
     public double MinScreenAirTemp { get; set; }
 
+    [JsonProperty("feelsLikeTemperature")]
+    public double FeelsLikeTemperature { get; set; }
+
 }

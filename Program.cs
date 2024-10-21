@@ -57,9 +57,7 @@ class Program()
             foreach (var timeSeries in properties.TimeSeries)
             {
                 var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
-                //extractedTexts.Add($"Maximum temperature {timeSeries.MaxScreenAirTemp} and minimum temperature {timeSeries.MinScreenAirTemp} at {localDateTime.ToLocalTime()}" );
-
-                extractedTexts.Add($"At {localDateTime.ToLocalTime()}, it will be cloudy with max temperature of ${timeSeries.MaxScreenAirTemp} and a min of ${timeSeries.MinScreenAirTemp}");
+                extractedTexts.Add($"At {localDateTime.ToLocalTime()}, it will be cloudy with max temperature of ${timeSeries.MaxScreenAirTemp}, a min of ${timeSeries.MinScreenAirTemp} and will feel like ${timeSeries.FeelsLikeTemperature}");
             }
         }
         catch (Exception ex)
