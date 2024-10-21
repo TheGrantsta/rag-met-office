@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 public class Utils
 {
@@ -56,5 +56,29 @@ public class Utils
         };
 
         return weather;
+    }
+
+    public static List<string> ExtractTextFromJson(string jsonData)
+    {
+        var extractedTexts = new List<string>();
+
+        try
+        {
+            var featureCollection = JsonConvert.DeserializeObject<FeatureCollection>(jsonData);
+
+            var properties = featureCollection.Features.First().Properties;
+
+            foreach (var timeSeries in properties.TimeSeries)
+            {
+                var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
+                extractedTexts.Add($"At {localDateTime.ToLocalTime()}, it will be ${Utils.Boo(timeSeries.WeatherCode)} with max temperature of ${timeSeries.MaxScreenAirTemp}, a min of ${timeSeries.MinScreenAirTemp} and will feel like ${timeSeries.FeelsLikeTemperature}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error extracting text from JSON: {ex.Message}");
+        }            
+        
+        return extractedTexts;
     }
 }
