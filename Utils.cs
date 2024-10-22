@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -70,8 +71,16 @@ public class Utils
 
             foreach (var timeSeries in properties.TimeSeries)
             {
+                var stringBuilder = new StringBuilder();
                 var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
-                extractedTexts.Add($"At {localDateTime.ToLocalTime()}, it will be ${Utils.Boo(timeSeries.WeatherCode)} with max temperature of ${timeSeries.MaxScreenAirTemp}, a min of ${timeSeries.MinScreenAirTemp} and will feel like ${timeSeries.FeelsLikeTemperature}");
+
+                stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${Utils.Boo(timeSeries.WeatherCode)} ");
+                stringBuilder.Append($"with max temperature of ${timeSeries.MaxScreenAirTemp} and ");
+                stringBuilder.Append($"a min of ${timeSeries.MinScreenAirTemp} ");
+                stringBuilder.Append($"that will feel like ${timeSeries.FeelsLikeTemperature} ");
+                stringBuilder.Append($"with {timeSeries.ProbabilityOfPrecipitation}% chance of rain and total rainfall of {timeSeries.TotalPrecipitationAmount}mm");
+
+                extractedTexts.Add(stringBuilder.ToString());
             }
         }
         catch (Exception ex)

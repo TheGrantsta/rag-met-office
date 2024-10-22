@@ -16,4 +16,10 @@ public class TimeSeries
 
     [JsonProperty("significantWeatherCode")]
     public int WeatherCode { get; set; }
+
+    [JsonProperty("totalPrecipAmount")]
+    public double TotalPrecipitationAmount { get; set; }
+
+    [JsonProperty("probOfPrecipitation")]
+    public int ProbabilityOfPrecipitation { get; set; }
 }
