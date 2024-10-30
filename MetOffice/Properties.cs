@@ -1,6 +1,10 @@
 using Newtonsoft.Json;
-public class Properties
+
+namespace rag_met_office.MetOffice
 {
-    [JsonProperty("timeSeries")]
-    public List<TimeSeries> TimeSeries { get; set; } = [];
+    public class Properties
+    {
+        [JsonProperty("timeSeries")]
+        public List<TimeSeries> TimeSeries { get; set; } = [];
+    }
 }

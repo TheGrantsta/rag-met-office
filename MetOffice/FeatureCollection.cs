@@ -1,6 +1,10 @@
 using Newtonsoft.Json;
-public class FeatureCollection
+
+namespace rag_met_office.MetOffice
 {
-    [JsonProperty("features")]
-    public List<Feature> Features { get; set; } = [];
+    public class FeatureCollection
+    {
+        [JsonProperty("features")]
+        public List<Feature> Features { get; set; } = [];
+    }
 }

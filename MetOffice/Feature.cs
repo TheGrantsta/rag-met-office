@@ -1,6 +1,9 @@
 using Newtonsoft.Json;
-public class Feature
+namespace rag_met_office.MetOffice
 {
-    [JsonProperty("properties")]
-    public Properties? Properties {get; set;}
+    public class Feature
+    {
+        [JsonProperty("properties")]
+        public Properties? Properties {get; set;}
+    }
 }

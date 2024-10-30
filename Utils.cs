@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using rag_met_office.MetOffice;
 
 public class Utils
 {
@@ -15,10 +16,42 @@ public class Utils
 
     public static List<string> ExtractTextFromJson(string jsonData, bool isMetOffice)
     {
-        return isMetOffice ? GetFromMetOffice(jsonData) : [];
+        return isMetOffice ? GetFromMetOffice(jsonData) : GetFromTomorrowIo(jsonData);
     }
 
     private static List<string> GetFromMetOffice(string jsonData)
+    {
+        var extractedTexts = new List<string>();
+
+        try
+        {
+            var featureCollection = JsonConvert.DeserializeObject<FeatureCollection>(jsonData);
+
+            var properties = featureCollection.Features.First().Properties;
+
+            foreach (var timeSeries in properties.TimeSeries)
+            {
+                var stringBuilder = new StringBuilder();
+                var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+                _ = stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${GetTextFor(timeSeries.WeatherCode)} ");
+                stringBuilder.Append($"with max temperature of ${timeSeries.MaxScreenAirTemp} and ");
+                stringBuilder.Append($"a min of ${timeSeries.MinScreenAirTemp} ");
+                stringBuilder.Append($"that will feel like ${timeSeries.FeelsLikeTemperature} ");
+                stringBuilder.Append($"with {timeSeries.ProbabilityOfPrecipitation}% chance of rain and total rainfall of {timeSeries.TotalPrecipitationAmount}mm");
+
+                extractedTexts.Add(stringBuilder.ToString());
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error extracting text from JSON: {ex.Message}");
+        }
+
+        return extractedTexts;
+    }
+
+    private static List<string> GetFromTomorrowIo(string jsonData)
     {
         var extractedTexts = new List<string>();
 

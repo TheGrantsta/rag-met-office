@@ -1,25 +1,28 @@
 using Newtonsoft.Json;
 
-public class TimeSeries
+namespace rag_met_office.MetOffice
 {
-    [JsonProperty("time")]
-    public string? Time { get; set; }
+    public class TimeSeries
+    {
+        [JsonProperty("time")]
+        public string? Time { get; set; }
 
-    [JsonProperty("maxScreenAirTemp")]
-    public double MaxScreenAirTemp { get; set; }
+        [JsonProperty("maxScreenAirTemp")]
+        public double MaxScreenAirTemp { get; set; }
 
-    [JsonProperty("minScreenAirTemp")]
-    public double MinScreenAirTemp { get; set; }
+        [JsonProperty("minScreenAirTemp")]
+        public double MinScreenAirTemp { get; set; }
 
-    [JsonProperty("feelsLikeTemperature")]
-    public double FeelsLikeTemperature { get; set; }
+        [JsonProperty("feelsLikeTemperature")]
+        public double FeelsLikeTemperature { get; set; }
 
-    [JsonProperty("significantWeatherCode")]
-    public int WeatherCode { get; set; }
+        [JsonProperty("significantWeatherCode")]
+        public int WeatherCode { get; set; }
 
-    [JsonProperty("totalPrecipAmount")]
-    public double TotalPrecipitationAmount { get; set; }
+        [JsonProperty("totalPrecipAmount")]
+        public double TotalPrecipitationAmount { get; set; }
 
-    [JsonProperty("probOfPrecipitation")]
-    public int ProbabilityOfPrecipitation { get; set; }
+        [JsonProperty("probOfPrecipitation")]
+        public int ProbabilityOfPrecipitation { get; set; }
+    }
 }
