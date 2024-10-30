@@ -1,4 +1,6 @@
-﻿class Program()
+﻿using rag_met_office.MetOffice;
+
+class Program()
 {
     public struct Coordinates(string latitude, string longitude)
     {
