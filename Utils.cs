@@ -13,7 +13,7 @@ public class Utils
         return configuration[keyName] ?? "";
     }
 
-    public static string Boo(int weatherCode)
+    public static string GetTextFor(int weatherCode)
     {
         Dictionary<int, string> weathers = new Dictionary<int, string>
         {
@@ -74,7 +74,7 @@ public class Utils
                 var stringBuilder = new StringBuilder();
                 var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
-                stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${Utils.Boo(timeSeries.WeatherCode)} ");
+                stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${Utils.GetTextFor(timeSeries.WeatherCode)} ");
                 stringBuilder.Append($"with max temperature of ${timeSeries.MaxScreenAirTemp} and ");
                 stringBuilder.Append($"a min of ${timeSeries.MinScreenAirTemp} ");
                 stringBuilder.Append($"that will feel like ${timeSeries.FeelsLikeTemperature} ");
