@@ -13,7 +13,12 @@ public class Utils
         return configuration[keyName] ?? "";
     }
 
-    public static List<string> ExtractTextFromJson(string jsonData)
+    public static List<string> ExtractTextFromJson(string jsonData, bool isMetOffice)
+    {
+        return isMetOffice ? GetFromMetOffice(jsonData) : [];
+    }
+
+    private static List<string> GetFromMetOffice(string jsonData)
     {
         var extractedTexts = new List<string>();
 
@@ -28,7 +33,7 @@ public class Utils
                 var stringBuilder = new StringBuilder();
                 var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
-                stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${Utils.GetTextFor(timeSeries.WeatherCode)} ");
+                _ = stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${GetTextFor(timeSeries.WeatherCode)} ");
                 stringBuilder.Append($"with max temperature of ${timeSeries.MaxScreenAirTemp} and ");
                 stringBuilder.Append($"a min of ${timeSeries.MinScreenAirTemp} ");
                 stringBuilder.Append($"that will feel like ${timeSeries.FeelsLikeTemperature} ");
@@ -40,8 +45,8 @@ public class Utils
         catch (Exception ex)
         {
             Console.WriteLine($"Error extracting text from JSON: {ex.Message}");
-        }            
-        
+        }
+
         return extractedTexts;
     }
 

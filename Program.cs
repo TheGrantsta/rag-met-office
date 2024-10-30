@@ -24,7 +24,7 @@ class Program()
 
         var forecastData = await Fetch(_forecastApiParams);
 
-        var forecastDataAsText = Utils.ExtractTextFromJson(forecastData);
+        var forecastDataAsText = Utils.ExtractTextFromJson(forecastData, isMetOffice);
 
         if(forecastDataAsText.Count > 0)
         {
