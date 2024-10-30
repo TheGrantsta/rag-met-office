@@ -1,27 +1,27 @@
-    public class ForecastApi
+public class ForecastApi
+{
+public static async Task<string> Fetch(string apiUrl, string latitude, string longitude, string apiKey)
     {
-    public static async Task<string> Fetch(string apiUrl, string latitude, string longitude)
+        var jsonResponse = string.Empty;
+
+        try
         {
-            var jsonResponse = string.Empty;
+            var requestUrl = $"{apiUrl}?latitude={latitude}&longitude={longitude}";
 
-            try
-            {
-                var requestUrl = $"{apiUrl}?latitude={latitude}&longitude={longitude}";
+            using (var client = new HttpClient()) {
+                client.DefaultRequestHeaders.Add("ApiKey", apiKey);
 
-                using (var client = new HttpClient()) {
-                    client.DefaultRequestHeaders.Add("ApiKey", Utils.GetConfigurationValues("MetOfficeApiKey"));
+                var response = await client.GetAsync(requestUrl);
+                response.EnsureSuccessStatusCode();
 
-                    var response = await client.GetAsync(requestUrl);
-                    response.EnsureSuccessStatusCode();
-
-                    jsonResponse = await response.Content.ReadAsStringAsync();
-                }
+                jsonResponse = await response.Content.ReadAsStringAsync();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error retrieving weather data from API: {ex.Message}");
-            }
-
-            return jsonResponse;
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving weather data from API: {ex.Message}");
+        }
+
+        return jsonResponse;
     }
+}

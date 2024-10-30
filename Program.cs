@@ -18,7 +18,7 @@
 
         _coordinates = new Coordinates(latitude, longitude);
 
-        var forecastData = await ForecastApi.Fetch("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", _coordinates.Latitude, _coordinates.Longitude);
+        var forecastData = await ForecastApi.Fetch("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", _coordinates.Latitude, _coordinates.Longitude, Utils.GetConfigurationValues("MetOfficeApiKey"));
 
         var forecastDataAsText = Utils.ExtractTextFromJson(forecastData);
 
