@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using rag_met_office.MetOffice;
+using rag_met_office.TomorrowIo;
 
 public class Utils
 {
@@ -57,20 +58,15 @@ public class Utils
 
         try
         {
-            var featureCollection = JsonConvert.DeserializeObject<FeatureCollection>(jsonData);
+            var timelines = JsonConvert.DeserializeObject<Root>(jsonData);
 
-            var properties = featureCollection.Features.First().Properties;
-
-            foreach (var timeSeries in properties.TimeSeries)
+            foreach (var minute in timelines.Timelines.Minutelys)
             {
                 var stringBuilder = new StringBuilder();
-                var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
-
-                _ = stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${GetTextFor(timeSeries.WeatherCode)} ");
-                stringBuilder.Append($"with max temperature of ${timeSeries.MaxScreenAirTemp} and ");
-                stringBuilder.Append($"a min of ${timeSeries.MinScreenAirTemp} ");
-                stringBuilder.Append($"that will feel like ${timeSeries.FeelsLikeTemperature} ");
-                stringBuilder.Append($"with {timeSeries.ProbabilityOfPrecipitation}% chance of rain and total rainfall of {timeSeries.TotalPrecipitationAmount}mm");
+                stringBuilder.Append($"At {minute.Time.ToLocalTime()}, it will be ${GetTextFor(minute.Values.WeatherCode)} ");
+                stringBuilder.Append($"with max temperature of ${minute.Values.Temperature} ");
+                stringBuilder.Append($"that will feel like ${minute.Values.FeelsLikeTemperature} ");
+                stringBuilder.Append($"with {minute.Values.PrecipitationProbability}% chance of rain and total rainfall of {minute.Values.TotalPrecipitationAmount}mm");
 
                 extractedTexts.Add(stringBuilder.ToString());
             }

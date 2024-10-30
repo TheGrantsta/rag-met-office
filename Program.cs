@@ -16,7 +16,9 @@ class Program()
         Console.WriteLine("Enter longitude: (hint -0.199610)");
         var longitude = Console.ReadLine();
 
-        var apiUrl = isMetOffice ? "https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly?" : "https://api.tomorrow.io/v4/weather/forecast?location=";
+        var apiUrl = isMetOffice ?
+        $"https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly?latitude={latitude}&longitude={longitude}" : 
+        $"https://api.tomorrow.io/v4/weather/forecast?location={latitude},{longitude}";
 
         var apiKey = isMetOffice ? Utils.GetConfigurationValues("MetOfficeApiKey") : Utils.GetConfigurationValues("TomorrowIoApiKey");
 

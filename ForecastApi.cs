@@ -14,12 +14,10 @@ public class ForecastApi
 
         try
         {
-            var requestUrl = $"{forecastApiParams.ApiUrl}latitude={forecastApiParams.Latitude}&longitude={forecastApiParams.Longitude}";
-
             using (var client = new HttpClient()) {
                 client.DefaultRequestHeaders.Add("ApiKey", forecastApiParams.ApiKey);
 
-                var response = await client.GetAsync(requestUrl);
+                var response = await client.GetAsync(forecastApiParams.ApiUrl);
                 response.EnsureSuccessStatusCode();
 
                 jsonResponse = await response.Content.ReadAsStringAsync();
