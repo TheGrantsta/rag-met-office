@@ -63,8 +63,8 @@ public class Utils
             foreach (var minute in timelines.Timelines.Minutelys)
             {
                 var stringBuilder = new StringBuilder();
-                stringBuilder.Append($"At {minute.Time.ToLocalTime()}, it will be ${GetTextFor(minute.Values.WeatherCode)} ");
-                stringBuilder.Append($"with max temperature of ${minute.Values.Temperature} ");
+                stringBuilder.Append($"At {minute.Time.ToLocalTime()}, ");
+                stringBuilder.Append($"it will be a temperature of ${minute.Values.Temperature} ");
                 stringBuilder.Append($"that will feel like ${minute.Values.FeelsLikeTemperature} ");
                 stringBuilder.Append($"with {minute.Values.PrecipitationProbability}% chance of rain and total rainfall of {minute.Values.TotalPrecipitationAmount}mm");
 

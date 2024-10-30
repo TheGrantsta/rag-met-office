@@ -30,17 +30,17 @@ class Program()
 
         if(forecastDataAsText.Count > 0)
         {
-            var generatedResponse = await GenerateResponseBasedOnContext(forecastDataAsText);
+            var generatedResponse = await GenerateResponseBasedOnContext(forecastDataAsText, isMetOffice);
 
             Console.WriteLine($"\n{generatedResponse}\n");
         }
     }
 
-       static async Task<string> GenerateResponseBasedOnContext(List<string> strings)
+       static async Task<string> GenerateResponseBasedOnContext(List<string> strings, bool isMetOffice)
     {
         // For simplicity, we are just going to concatenate the weather statements into a simple context for now.
         var context = string.Join("\n", strings.Select(e => string.Join(". ", e)));
 
-        return await OpenAiApi.GenerateResponseBasedOnContext(context, _forecastApiParams.Latitude, _forecastApiParams.Longitude);
+        return await OpenAiApi.GenerateResponseBasedOnContext(context, _forecastApiParams.Latitude, _forecastApiParams.Longitude, isMetOffice);
     }
 }

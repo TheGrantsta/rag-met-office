@@ -5,11 +5,17 @@ using Newtonsoft.Json;
 
 public class OpenAiApi
 {
-    public static async Task<string> GenerateResponseBasedOnContext(string context, string latitude, string longitude)
+    public static async Task<string> GenerateResponseBasedOnContext(string context, string latitude, string longitude, bool isMetOffice)
     {
         var generatedText = string.Empty;
 
-        string contextInfo = $"Here is the weather data for this location (latitude {latitude} and longitude {longitude}) for the next 24 hours: {context}.";
+        string contextInfo = isMetOffice ?
+        $"Here is the weather data for this location (latitude {latitude} and longitude {longitude}) for the next 24 hours: {context}." :
+        $"Here is the weather data for this location (latitude {latitude} and longitude {longitude}) for the next hour: {context}.";
+
+        string prompt = isMetOffice ?
+        "What will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places." :
+        "Summarise and identify the weather for the next hour focusing on any changes. Limit response to a maximum of 30 words and round temperatures to zero decimal places.";
 
         var requestBody = new
             {
@@ -17,7 +23,7 @@ public class OpenAiApi
                 messages = new[]
                 {
                     new { role = "system", content = contextInfo },
-                    new { role = "user", content = $"What will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places." }
+                    new { role = "user", content = prompt }
                 },
                 max_tokens = 100,
                 temperature = 0.7
