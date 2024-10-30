@@ -13,7 +13,39 @@ public class Utils
         return configuration[keyName] ?? "";
     }
 
-    public static string GetTextFor(int weatherCode)
+    public static List<string> ExtractTextFromJson(string jsonData)
+    {
+        var extractedTexts = new List<string>();
+
+        try
+        {
+            var featureCollection = JsonConvert.DeserializeObject<FeatureCollection>(jsonData);
+
+            var properties = featureCollection.Features.First().Properties;
+
+            foreach (var timeSeries in properties.TimeSeries)
+            {
+                var stringBuilder = new StringBuilder();
+                var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+                stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${Utils.GetTextFor(timeSeries.WeatherCode)} ");
+                stringBuilder.Append($"with max temperature of ${timeSeries.MaxScreenAirTemp} and ");
+                stringBuilder.Append($"a min of ${timeSeries.MinScreenAirTemp} ");
+                stringBuilder.Append($"that will feel like ${timeSeries.FeelsLikeTemperature} ");
+                stringBuilder.Append($"with {timeSeries.ProbabilityOfPrecipitation}% chance of rain and total rainfall of {timeSeries.TotalPrecipitationAmount}mm");
+
+                extractedTexts.Add(stringBuilder.ToString());
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error extracting text from JSON: {ex.Message}");
+        }            
+        
+        return extractedTexts;
+    }
+
+    private static string GetTextFor(int weatherCode)
     {
         Dictionary<int, string> weathers = new Dictionary<int, string>
         {
@@ -57,37 +89,5 @@ public class Utils
         };
 
         return weather;
-    }
-
-    public static List<string> ExtractTextFromJson(string jsonData)
-    {
-        var extractedTexts = new List<string>();
-
-        try
-        {
-            var featureCollection = JsonConvert.DeserializeObject<FeatureCollection>(jsonData);
-
-            var properties = featureCollection.Features.First().Properties;
-
-            foreach (var timeSeries in properties.TimeSeries)
-            {
-                var stringBuilder = new StringBuilder();
-                var localDateTime = DateTime.Parse(timeSeries.Time, null, System.Globalization.DateTimeStyles.RoundtripKind);
-
-                stringBuilder.Append($"At {localDateTime.ToLocalTime()}, it will be ${Utils.GetTextFor(timeSeries.WeatherCode)} ");
-                stringBuilder.Append($"with max temperature of ${timeSeries.MaxScreenAirTemp} and ");
-                stringBuilder.Append($"a min of ${timeSeries.MinScreenAirTemp} ");
-                stringBuilder.Append($"that will feel like ${timeSeries.FeelsLikeTemperature} ");
-                stringBuilder.Append($"with {timeSeries.ProbabilityOfPrecipitation}% chance of rain and total rainfall of {timeSeries.TotalPrecipitationAmount}mm");
-
-                extractedTexts.Add(stringBuilder.ToString());
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error extracting text from JSON: {ex.Message}");
-        }            
-        
-        return extractedTexts;
     }
 }
