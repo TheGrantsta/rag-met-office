@@ -1,8 +1,6 @@
-namespace rag_met_office.MetOffice
-{
-    public class WeatherApi
+    public class ForecastApi
     {
-    public static async Task<string> FetchDataFromApi(string apiUrl, string latitude, string longitude)
+    public static async Task<string> Fetch(string apiUrl, string latitude, string longitude)
         {
             var jsonResponse = string.Empty;
 
@@ -27,4 +25,3 @@ namespace rag_met_office.MetOffice
             return jsonResponse;
         }
     }
-}

@@ -1,6 +1,4 @@
-﻿using rag_met_office.MetOffice;
-
-class Program()
+﻿class Program()
 {
     public struct Coordinates(string latitude, string longitude)
     {
@@ -20,13 +18,13 @@ class Program()
 
         _coordinates = new Coordinates(latitude, longitude);
 
-        var hourlySpotData = await WeatherApi.FetchDataFromApi("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", _coordinates.Latitude, _coordinates.Longitude);
+        var forecastData = await ForecastApi.Fetch("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", _coordinates.Latitude, _coordinates.Longitude);
 
-        var hourlySpotDataAsText = Utils.ExtractTextFromJson(hourlySpotData);
+        var forecastDataAsText = Utils.ExtractTextFromJson(forecastData);
 
-        if(hourlySpotDataAsText.Count > 0)
+        if(forecastDataAsText.Count > 0)
         {
-            var generatedResponse = await GenerateResponseBasedOnContext(hourlySpotDataAsText);
+            var generatedResponse = await GenerateResponseBasedOnContext(forecastDataAsText);
 
             Console.WriteLine($"\n{generatedResponse}\n");
         }
