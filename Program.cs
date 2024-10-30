@@ -5,7 +5,8 @@ class Program()
     private static ForecastApiParams _forecastApiParams;
     static async Task Main(string[] args)
     {
-        var source = (args.Length == 0) ? "tomorrow.io" : args.First();
+        var source = (args.Length == 0) ? "MetOffice" : args.First();
+        var isMetOffice = source.Equals("MetOffice");
 
         Console.WriteLine($"Source: {source}.");
 
@@ -15,7 +16,11 @@ class Program()
         Console.WriteLine("Enter longitude: (hint -0.199610)");
         var longitude = Console.ReadLine();
 
-        _forecastApiParams = new ForecastApiParams("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", latitude, longitude, Utils.GetConfigurationValues("MetOfficeApiKey"));
+        var apiUrl = isMetOffice ? "https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly?" : "https://api.tomorrow.io/v4/weather/forecast?location=";
+
+        var apiKey = isMetOffice ? Utils.GetConfigurationValues("MetOfficeApiKey") : Utils.GetConfigurationValues("TomorrowIoApiKey");
+
+        _forecastApiParams = new ForecastApiParams(apiUrl, latitude, longitude, apiKey);
 
         var forecastData = await Fetch(_forecastApiParams);
 

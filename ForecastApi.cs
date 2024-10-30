@@ -8,13 +8,13 @@ public class ForecastApi
         public string ApiKey { get; set; } = apiKey;
     }
 
-    public static async Task<string> Fetch( ForecastApiParams forecastApiParams)// string apiUrl, string latitude, string longitude, string apiKey)
+    public static async Task<string> Fetch( ForecastApiParams forecastApiParams)
     {
         var jsonResponse = string.Empty;
 
         try
         {
-            var requestUrl = $"{forecastApiParams.ApiUrl}?latitude={forecastApiParams.Latitude}&longitude={forecastApiParams.Longitude}";
+            var requestUrl = $"{forecastApiParams.ApiUrl}latitude={forecastApiParams.Latitude}&longitude={forecastApiParams.Longitude}";
 
             using (var client = new HttpClient()) {
                 client.DefaultRequestHeaders.Add("ApiKey", forecastApiParams.ApiKey);
