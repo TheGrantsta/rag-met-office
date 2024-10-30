@@ -1,24 +1,23 @@
-﻿class Program()
+﻿using static ForecastApi;
+
+class Program()
 {
-    public struct Coordinates(string latitude, string longitude)
-    {
-        public string Latitude { get; set; } = latitude;
-        public string Longitude { get; set; } = longitude;
-    }
-
-    private static Coordinates _coordinates;
-
+    private static ForecastApiParams _forecastApiParams;
     static async Task Main(string[] args)
     {
+        var source = (args.Length == 0) ? "tomorrow.io" : args.First();
+
+        Console.WriteLine($"Source: {source}.");
+
         Console.WriteLine("Enter latitude: (hint 51.652931)");
         var latitude = Console.ReadLine();
 
         Console.WriteLine("Enter longitude: (hint -0.199610)");
         var longitude = Console.ReadLine();
 
-        _coordinates = new Coordinates(latitude, longitude);
+        _forecastApiParams = new ForecastApiParams("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", latitude, longitude, Utils.GetConfigurationValues("MetOfficeApiKey"));
 
-        var forecastData = await ForecastApi.Fetch("https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly", _coordinates.Latitude, _coordinates.Longitude, Utils.GetConfigurationValues("MetOfficeApiKey"));
+        var forecastData = await Fetch(_forecastApiParams);
 
         var forecastDataAsText = Utils.ExtractTextFromJson(forecastData);
 
@@ -35,6 +34,6 @@
         // For simplicity, we are just going to concatenate the weather statements into a simple context for now.
         var context = string.Join("\n", strings.Select(e => string.Join(". ", e)));
 
-        return await OpenAiApi.GenerateResponseBasedOnContext(context,_coordinates.Latitude, _coordinates.Longitude);
+        return await OpenAiApi.GenerateResponseBasedOnContext(context, _forecastApiParams.Latitude, _forecastApiParams.Longitude);
     }
 }

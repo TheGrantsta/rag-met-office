@@ -1,15 +1,23 @@
 public class ForecastApi
 {
-public static async Task<string> Fetch(string apiUrl, string latitude, string longitude, string apiKey)
+    public struct ForecastApiParams(string apiUrl, string latitude, string longitude, string apiKey)
+    {
+        public string ApiUrl { get; set; } = apiUrl;
+        public string Latitude { get; set; } = latitude;
+        public string Longitude { get; set; } = longitude;
+        public string ApiKey { get; set; } = apiKey;
+    }
+
+    public static async Task<string> Fetch( ForecastApiParams forecastApiParams)// string apiUrl, string latitude, string longitude, string apiKey)
     {
         var jsonResponse = string.Empty;
 
         try
         {
-            var requestUrl = $"{apiUrl}?latitude={latitude}&longitude={longitude}";
+            var requestUrl = $"{forecastApiParams.ApiUrl}?latitude={forecastApiParams.Latitude}&longitude={forecastApiParams.Longitude}";
 
             using (var client = new HttpClient()) {
-                client.DefaultRequestHeaders.Add("ApiKey", apiKey);
+                client.DefaultRequestHeaders.Add("ApiKey", forecastApiParams.ApiKey);
 
                 var response = await client.GetAsync(requestUrl);
                 response.EnsureSuccessStatusCode();
