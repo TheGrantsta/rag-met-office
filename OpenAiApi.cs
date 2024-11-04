@@ -2,18 +2,19 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
 using Newtonsoft.Json;
+using static ForecastApi;
 
 public class OpenAiApi
 {
-    public static async Task<string> GenerateResponseBasedOnContext(string context, string latitude, string longitude, bool isMetOffice)
+    public static async Task<string> GenerateResponseBasedOnContext(ForecastApiParams forecastApiParams, string context)
     {
         var generatedText = string.Empty;
 
-        string contextInfo = isMetOffice ?
-        $"Here is the weather data for this location (latitude {latitude} and longitude {longitude}) for the next 24 hours: {context}." :
-        $"Here is the weather data for this location (latitude {latitude} and longitude {longitude}) for the next hour: {context}.";
+        string contextInfo = forecastApiParams.GetIsMetOffice() ?
+        $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next 24 hours: {context}." :
+        $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next hour: {context}.";
 
-        string prompt = isMetOffice ?
+        string prompt = forecastApiParams.GetIsMetOffice() ?
         "What will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places." :
         "Summarise and identify the weather for the next hour focusing on any changes. Limit response to a maximum of 30 words and round temperatures to zero decimal places.";
 
