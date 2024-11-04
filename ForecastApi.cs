@@ -1,6 +1,6 @@
 public class ForecastApi
 {
-    public class ForecastApiParams(string latitude, string longitude, bool isMetOffice)
+    public class ForecastApiParams(bool isMetOffice, string latitude, string longitude)
     {
         public string Latitude { get; set; } = latitude;
         public string Longitude { get; set; } = longitude;

@@ -11,12 +11,12 @@ public class OpenAiApi
         var generatedText = string.Empty;
 
         string contextInfo = forecastApiParams.GetIsMetOffice() ?
-        $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next 24 hours: {context}." :
-        $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next hour: {context}.";
+            $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next 24 hours: {context}." :
+            $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next hour: {context}.";
 
         string prompt = forecastApiParams.GetIsMetOffice() ?
-        "What will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places." :
-        "Summarise and identify the weather for the next hour focusing on any changes. Limit response to a maximum of 30 words and round temperatures to zero decimal places.";
+            "What will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places." :
+            "Summarise and identify the weather for the next hour focusing on any changes. Limit response to a maximum of 30 words and round temperatures to zero decimal places.";
 
         var requestBody = new
             {
@@ -32,7 +32,7 @@ public class OpenAiApi
 
         try
         {
-             using (var client = new HttpClient())
+            using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Utils.GetConfigurationValues("OpenAiApiKey"));
                 client.DefaultRequestHeaders.Add("OpenAI-Organization", Utils.GetConfigurationValues("OpenAiOrganisationId"));

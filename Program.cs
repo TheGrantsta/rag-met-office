@@ -11,18 +11,19 @@ class Program()
         Console.WriteLine("Enter longitude: (hint -0.199610)");
         var longitude = Console.ReadLine();
 
-        _forecastApiParams = new ForecastApiParams(latitude, longitude, isMetOffice: (args.Length == 0) || args.First().Equals("MetOffice"));
+        _forecastApiParams = new ForecastApiParams(IsMetOffice(args), latitude, longitude);
 
-        var forecastData = await Fetch(_forecastApiParams);
-
-        var forecastDataAsText = Utils.ExtractTextFromJson(forecastData, _forecastApiParams.GetIsMetOffice());
+        var forecastDataAsText = Utils.ExtractTextFromJson((string?)await Fetch(_forecastApiParams), _forecastApiParams.GetIsMetOffice());
 
         if(forecastDataAsText.Count > 0)
         {
-            var generatedResponse = await GenerateResponseBasedOnContext(forecastDataAsText);
-
-            Console.WriteLine($"\n{generatedResponse}\n");
+            Console.WriteLine($"\n{await GenerateResponseBasedOnContext(forecastDataAsText)}\n");
         }
+    }
+
+    static bool IsMetOffice(string[] args)
+    {
+        return (args.Length == 0) || args.First().Equals("MetOffice");
     }
 
     static async Task<string> GenerateResponseBasedOnContext(List<string> strings)
