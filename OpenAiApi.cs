@@ -19,16 +19,16 @@ public class OpenAiApi
             "Summarise and identify the weather for the next hour focusing on any changes. Limit response to a maximum of 30 words and round temperatures to zero decimal places.";
 
         var requestBody = new
-            {
-                model = "gpt-3.5-turbo",
-                messages = new[]
+        {
+            model = "gpt-3.5-turbo",
+            messages = new[]
                 {
                     new { role = "system", content = contextInfo },
                     new { role = "user", content = prompt }
                 },
-                max_tokens = 100,
-                temperature = 0.7
-            };
+            max_tokens = 100,
+            temperature = 0.7
+        };
 
         try
         {
@@ -46,7 +46,12 @@ public class OpenAiApi
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var parsedResponse = JsonDocument.Parse(jsonResponse);
 
-                generatedText = parsedResponse.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").ToString().Trim();
+                var promptTokens = parsedResponse.RootElement.GetProperty("usage").GetProperty("prompt_tokens").ToString().Trim();
+                var completionTokens = parsedResponse.RootElement.GetProperty("usage").GetProperty("completion_tokens").ToString().Trim();
+
+                var responseContent = parsedResponse.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").ToString().Trim();
+
+                generatedText = $"Response: {responseContent}\n\nUsage: prompt tokens - {promptTokens} & completion tokens - {completionTokens}\n\n{GetTotalCost(promptTokens, completionTokens)}";
             }
         }
         catch (Exception ex)
@@ -55,5 +60,13 @@ public class OpenAiApi
         }
 
         return generatedText;
+    }
+
+    private static string GetTotalCost(string promptTokens, string completionTokens)
+    {
+        double promptCost = double.Parse(promptTokens) / 1000000 * 0.5;
+        double completionCost = double.Parse(completionTokens) / 1000000 * 1.5;
+
+        return $"Total estimated cost (USD): {Math.Round(promptCost + completionCost, 5)}";
     }
 }
