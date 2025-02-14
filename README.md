@@ -33,5 +33,17 @@ dotnet user-secrets set "<Name>" "<Value>"
 ```
 
 ## Running console app
-
 By default, when running the console app you will be prompted for latitude and longitude, and it will use the Met Office hourly data API. To use the Tomorrow.Io API, pass any string as a command line argument
+
+If you don't specify latitue or longitude, the default hint value(s) will be used
+
+### Met Office - next four hours
+```console
+dotnet run
+```
+
+### Tomorrow.IO
+```console
+dotnet run 'tomorrow'
+```
+

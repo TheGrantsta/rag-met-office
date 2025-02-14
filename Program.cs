@@ -6,16 +6,19 @@ class Program()
     static async Task Main(string[] args)
     {
         Console.WriteLine("Enter latitude: (hint 51.652931)");
-        var latitude = Console.ReadLine();
+        var latitudeInput = Console.ReadLine();
 
         Console.WriteLine("Enter longitude: (hint -0.199610)");
-        var longitude = Console.ReadLine();
+        var longitudeInput = Console.ReadLine();
+
+        string latitude = string.IsNullOrWhiteSpace(latitudeInput) ? "51.652931" : latitudeInput;
+        string longitude = string.IsNullOrWhiteSpace(longitudeInput) ? "-0.199610" : longitudeInput;
 
         _forecastApiParams = new ForecastApiParams(IsMetOffice(args), latitude, longitude);
 
         var forecastDataAsText = Utils.ExtractTextFromJson((string?)await Fetch(_forecastApiParams), _forecastApiParams.GetIsMetOffice());
 
-        if(forecastDataAsText.Count > 0)
+        if (forecastDataAsText.Count > 0)
         {
             Console.WriteLine($"\n{await GenerateResponseBasedOnContext(forecastDataAsText)}\n");
         }
