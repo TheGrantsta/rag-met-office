@@ -15,7 +15,7 @@ public class OpenAiApi
             $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next hour: {context}.";
 
         string prompt = forecastApiParams.GetIsMetOffice() ?
-            "What will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places." :
+            "You are an experienced meterologist at the Met Office and I would your professional opinion on what will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places. Please don't make things up and check your response, but don't include your checks in the response." :
             "Summarise and identify the weather for the next hour focusing on any changes. Limit response to a maximum of 30 words and round temperatures to zero decimal places.";
 
         var requestBody = new
@@ -67,6 +67,6 @@ public class OpenAiApi
         double promptCost = double.Parse(promptTokens) / 1000000 * 0.5;
         double completionCost = double.Parse(completionTokens) / 1000000 * 1.5;
 
-        return $"Total estimated cost (USD): {Math.Round(promptCost + completionCost, 5)}";
+        return $"Total estimated cost (USD): ${Math.Round(promptCost + completionCost, 5)}";
     }
 }
