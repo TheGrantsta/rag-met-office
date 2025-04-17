@@ -15,8 +15,8 @@ public class OpenAiApi
             $"Here is the weather data for this location (latitude {forecastApiParams.Latitude} and longitude {forecastApiParams.Longitude}) for the next hour: {context}.";
 
         string prompt = forecastApiParams.GetIsMetOffice() ?
-            "You are an experienced meterologist at the Met Office and I would your professional opinion on what will the weather be like for the next 4 hours? Summarise the response to two lines, to a maximum of 30 words, and round temperatures to zero decimal places. Please don't make things up and check your response, but don't include your checks in the response." :
-            "You are an experienced meterologist at the Met Office and I would your professional opinion to summarise and identify the weather for the next hour focusing on any changes like it will start or stop raining. If there is rain in the forecast, could you how many minutes before it starts or stops? Limit response to a maximum of 30 words and round temperatures to zero decimal places. Please don't make things up and check your response, but don't include your checks in the response.";
+            "You are an experienced meteorologist at the Met Office. Please provide your professional forecast for the next 4 hours. The response should target a reading grade of Year 4; avoid polysyllabic words. Keep your answer short-summarise in short sentences, no more than 3 sentences and a maximum of 30 words. Round all temperatures to the nearest whole number. Ensure accuracy without fabricating information—fact-check internally, but do not include those checks in your response." :
+            "You are an experienced meteorologist at the Met Office. Please tell me what the weather will be like in the next hour. Say if it will start or stop raining, and when (in minutes). The response should target a reading grade of Year 4; avoid polysyllabic words. Keep your answer short—summarise in short sentences, no more than 3 sentences and a maximum of 30 words. Round temperatures to whole numbers. Make sure it's correct, but don’t show how you checked it.";
 
         var requestBody = new
         {
